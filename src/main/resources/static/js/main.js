@@ -6,7 +6,7 @@ let roleList = [
 let isUser = true;
 
 let fetchUrlUsers = "http://localhost:7070/api/users";
-let fetchUrlUser = "http://localhost:7070/api/user";
+let fetchUrlUser = "http://localhost:7070/api/users/user";
 
 $(async function () {
     await getUser();

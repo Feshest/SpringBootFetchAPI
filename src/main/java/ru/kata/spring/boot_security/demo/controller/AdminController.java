@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -14,7 +15,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class AdminController {
 
     private final UserService userService;
@@ -24,18 +25,18 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/users")
+    @PostMapping()
     public ResponseEntity<HttpStatus> createUser(@Valid @RequestBody User user) {
         try {
             userService.createUser(user);
@@ -45,19 +46,18 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUserById(@PathVariable("id") Long id) {
         userService.deleteUserById(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> getUserByUsername(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
+    public ResponseEntity<User> getUserByUsername(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> editUser(@Valid @RequestBody User user) {
         userService.editUser(user);
         return ResponseEntity.ok(HttpStatus.OK);
